@@ -4,6 +4,33 @@ const SupportedChainId = {
   POLYGON: 137,
 };
 
+const abi = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "swapId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "takerAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "fee",
+        type: "uint256",
+      },
+    ],
+    name: "SwapTaken",
+    type: "event",
+  },
+];
 const ALL_SUPPORTED_CHAIN_IDS = [
   SupportedChainId.MAINNET,
   SupportedChainId.RINKEBY,
@@ -24,6 +51,10 @@ const CHAIN_INFO = {
     explorer: "https://rinkeby.etherscan.io/",
     infura: "https://rinkeby.infura.io/v3/",
     nativeCoin: { name: "Rinkeby ETH", symbol: "rinkETH", decimals: 18 },
+    contract: {
+      address: "0x9dBF0a9E6Ee13d1c7263481C7019839222f514e5",
+      abi: abi,
+    },
   },
   [SupportedChainId.POLYGON]: {
     name: "Polygon",
@@ -31,6 +62,10 @@ const CHAIN_INFO = {
     explorer: "https://polygonscan.com/",
     infura: "https://polygon-mainnet.infura.io/v3/",
     nativeCoin: { name: "MATIC", symbol: "MATIC", decimals: 18 },
+    contract: {
+      address: "0x63F43925B13E6502cbcEcBbC942f9f0c7DA35a98",
+      abi: abi,
+    },
   },
 };
 
