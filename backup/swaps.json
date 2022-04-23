@@ -1,5 +1,17 @@
 {
-  "1": {},
-  "3": {},
-  "137": {}
+  "1": {
+    "lastScan": {
+      "blockNumber": 14637402
+    }
+  },
+  "3": {
+    "lastScan": {
+      "blockNumber": 12212068
+    }
+  },
+  "137": {
+    "lastScan": {
+      "blockNumber": 27459073
+    }
+  }
 }
