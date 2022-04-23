@@ -20,7 +20,7 @@ const CHAIN_INFO = {
     infura: "https://mainnet.infura.io/v3/",
     nativeCoin: { name: "ETH", symbol: "ETH", decimals: 18 },
     contract: {
-      address: "0x9dBF0a9E6Ee13d1c7263481C7019839222f514e5",
+      address: "0xd56E1a69d97A4A0bD0942b7C6AE6eB44dBE371DE",
       abi: abi.nftDex,
       tokenAbi: abi.token,
       nftAbi: abi.nft,
@@ -34,7 +34,7 @@ const CHAIN_INFO = {
     infura: "https://ropsten.infura.io/v3/",
     nativeCoin: { name: "ETH", symbol: "ETH", decimals: 18 },
     contract: {
-      address: "0x9ac8763bdBCBED3C04d2Cd34916bB6C6537c0411",
+      address: "0x9ac8763bdbcbed3c04d2cd34916bb6c6537c0411",
       abi: abi.nftDex,
       tokenAbi: abi.token,
       nftAbi: abi.nft,
@@ -48,7 +48,7 @@ const CHAIN_INFO = {
     infura: "https://polygon-mainnet.infura.io/v3/",
     nativeCoin: { name: "MATIC", symbol: "MATIC", decimals: 18 },
     contract: {
-      address: "0x63F43925B13E6502cbcEcBbC942f9f0c7DA35a98",
+      address: "0xd56e1a69d97a4a0bd0942b7c6ae6eb44dbe371de",
       abi: abi.nftDex,
       tokenAbi: abi.token,
       nftAbi: abi.nft,
