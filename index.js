@@ -123,9 +123,17 @@ function ipfsLink(link) {
   }
   return finalLink;
 }
+
 async function getSwap(chainId, swap, side) {
   let itemData = {};
+  let itemId = 0;
   for (let item in swap.components[side]) {
+    /*
+      type 0 = ERC1155
+      type 1 = ERC721
+      type 2 = ERC20
+      type 3 = Native Coin
+    */
     if (swap.components[side][item].assetType == "0") {
       let snftContract = new ethers.Contract(
         swap.components[side][item].tokenAddress,
@@ -134,20 +142,25 @@ async function getSwap(chainId, swap, side) {
       );
 
       for (let token in swap.components[side][item].tokenIds) {
-        itemData[item] = {
+        itemData[itemId] = {
           type: swap.components[side][item].assetType,
           tokenAddress: swap.components[side][item].tokenAddress,
-          tokenURI: await snftContract.uri(
-            swap.components[side][item].tokenIds[token].toString()
-          ),
-          tokenId: swap.components[side][item].tokenIds[token].toString(),
-          amounts: swap.components[side][item].amounts[token].toString(),
-          metadata: await fetcher(
+          tokenURI: ipfsLink(
             await snftContract.uri(
               swap.components[side][item].tokenIds[token].toString()
             )
           ),
+          tokenId: swap.components[side][item].tokenIds[token].toString(),
+          amounts: swap.components[side][item].amounts[token].toString(),
+          metadata: await fetcher(
+            ipfsLink(
+              await snftContract.uri(
+                swap.components[side][item].tokenIds[token].toString()
+              )
+            )
+          ),
         };
+        itemId += 1;
       }
     } else if (swap.components[side][item].assetType == "1") {
       let nftContract = new ethers.Contract(
@@ -155,22 +168,26 @@ async function getSwap(chainId, swap, side) {
         chainData[chainId]["contract"].nftAbi,
         providers[chainId]
       );
-
-      itemData[item] = {
+      itemData[itemId] = {
         type: swap.components[side][item].assetType,
         tokenAddress: swap.components[side][item].tokenAddress,
         name: await nftContract.name(),
         symbol: await nftContract.symbol(),
-        tokenURI: await nftContract.tokenURI(
-          swap.components[side][item].tokenIds[0].toString()
-        ),
-        tokenId: swap.components[side][item].tokenIds[0].toString(),
-        metadata: await fetcher(
+        tokenURI: ipfsLink(
           await nftContract.tokenURI(
             swap.components[side][item].tokenIds[0].toString()
           )
         ),
+        tokenId: swap.components[side][item].tokenIds[0].toString(),
+        metadata: await fetcher(
+          ipfsLink(
+            await nftContract.tokenURI(
+              swap.components[side][item].tokenIds[0].toString()
+            )
+          )
+        ),
       };
+      itemId += 1;
     } else if (swap.components[side][item].assetType == "2") {
       let tokenContract = new ethers.Contract(
         swap.components[side][item].tokenAddress,
@@ -178,7 +195,7 @@ async function getSwap(chainId, swap, side) {
         providers[chainId]
       );
 
-      itemData[item] = {
+      itemData[itemId] = {
         type: swap.components[side][item].assetType,
         tokenAddress: swap.components[side][item].tokenAddress,
         name: await tokenContract.name(),
@@ -188,8 +205,9 @@ async function getSwap(chainId, swap, side) {
           await tokenContract.decimals()
         ),
       };
+      itemId += 1;
     } else if (swap.components[side][item].assetType == "3") {
-      itemData[item] = {
+      itemData[itemId] = {
         type: swap.components[side][item].assetType,
         tokenAddress: swap.components[side][item].tokenAddress,
         name: chainData[chainId].nativeCoin.name,
@@ -199,6 +217,7 @@ async function getSwap(chainId, swap, side) {
           chainData[chainId].nativeCoin.decimals
         ),
       };
+      itemId += 1;
     } else {
       console.log(swap.components[side][item].assetType);
       console.log("Unknown asset type");
