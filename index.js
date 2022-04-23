@@ -105,14 +105,8 @@ function toWeiWithDecimals(amount, decimals) {
 
 async function fetcher(link) {
   let res = undefined;
-  let url = link;
-  if (link.substring(0, 4) == "ipfs") {
-    url = "https://ipfs.io/ipfs/" + link.substring(7);
-  } else if (url.substring(0, 4) == "http") {
-    url = link;
-  }
   try {
-    res = await fetch(url);
+    res = await fetch(link);
     res = res.json();
   } catch (e) {
     const res = undefined;
@@ -120,6 +114,15 @@ async function fetcher(link) {
   return res;
 }
 
+function ipfsLink(link) {
+  let finalLink;
+  if (link.substring(0, 4) == "ipfs") {
+    finalLink = "https://ipfs.io/ipfs/" + link.substring(7);
+  } else if (link.substring(0, 4) == "http") {
+    finalLink = link;
+  }
+  return finalLink;
+}
 async function getSwap(chainId, swap, side) {
   let itemData = {};
   for (let item in swap.components[side]) {
