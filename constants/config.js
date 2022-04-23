@@ -19,6 +19,8 @@ const CHAIN_INFO = {
     explorer: "https://etherscan.io/",
     infura: "https://mainnet.infura.io/v3/",
     nativeCoin: { name: "ETH", symbol: "ETH", decimals: 18 },
+    pollingInterval: 30000, //milliseconds
+    minBlockRang: 1,
     contract: {
       address: "0xd56E1a69d97A4A0bD0942b7C6AE6eB44dBE371DE",
       abi: abi.nftDex,
@@ -33,6 +35,8 @@ const CHAIN_INFO = {
     explorer: "https://ropsten.etherscan.io/",
     infura: "https://ropsten.infura.io/v3/",
     nativeCoin: { name: "ETH", symbol: "ETH", decimals: 18 },
+    pollingInterval: 30000, //milliseconds
+    minBlockRang: 1,
     contract: {
       address: "0x9ac8763bdbcbed3c04d2cd34916bb6c6537c0411",
       abi: abi.nftDex,
@@ -47,6 +51,8 @@ const CHAIN_INFO = {
     explorer: "https://polygonscan.com/",
     infura: "https://polygon-mainnet.infura.io/v3/",
     nativeCoin: { name: "MATIC", symbol: "MATIC", decimals: 18 },
+    pollingInterval: 20000, //milliseconds
+    minBlockRang: 3,
     contract: {
       address: "0xd56e1a69d97a4a0bd0942b7c6ae6eb44dbe371de",
       abi: abi.nftDex,
