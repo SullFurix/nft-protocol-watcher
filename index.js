@@ -226,38 +226,215 @@ async function getSwap(chainId, swap, side) {
   return itemData;
 }
 
-async function send(message) {
-  await discordChannel.send(message);
+async function deployMessage(message) {
+  if (message === " ") {
+    await discordChannel.send("** **");
+  } else {
+    await discordChannel.send(message);
+    //await twitter
+  }
 
   //telegram.sendMessage(channelid, message);
 }
 
-async function newSwap(chainId, contract, swapId) {
-  let swap = await contract.swap(swapId.toString());
-  let take = await getSwap(chainId, swap, 0);
-  let give = await getSwap(chainId, swap, 1);
+async function send(message) {
+  let oneLineMessage = "";
 
-  swaps[chainId][swapId.toString()] = {
-    id: swapId.toString(),
-    take: take,
-    give: give,
-  };
+  oneLineMessage = oneLineMessage + "New swap (" + message.id + ") \n \n";
 
-  swaps[chainId]["lastSwap"] = {
-    id: swapId.toString(),
-    blockNumber: "1",
+  for (info in message.take) {
+    oneLineMessage = oneLineMessage + "Take \n \n";
+    /*
+      type 0 = ERC1155
+      type 1 = ERC721
+      type 2 = ERC20
+      type 3 = Native Coin
+    */
+    if (message.take[info].type === 0) {
+      oneLineMessage = oneLineMessage + "Type: ERC1155 \n";
+      oneLineMessage =
+        oneLineMessage + "Address: " + message.take[info].tokenAddress + "\n";
+      oneLineMessage =
+        oneLineMessage + "URI: " + message.take[info].tokenURI + "\n";
+      oneLineMessage =
+        oneLineMessage + "Token id: " + message.take[info].tokenId + "\n";
+      oneLineMessage =
+        oneLineMessage + "Amounts : " + message.take[info].amounts + "\n";
+      oneLineMessage =
+        oneLineMessage +
+        "Image: " +
+        ipfsLink(message.take[info].metadata.image) +
+        "\n";
+    } else if (message.take[info].type === 1) {
+      oneLineMessage = oneLineMessage + "Type: ERC721 \n";
+      oneLineMessage =
+        oneLineMessage + "Address: " + message.take[info].tokenAddress + "\n";
+      oneLineMessage =
+        oneLineMessage + "Name: " + message.take[info].name + "\n";
+      oneLineMessage =
+        oneLineMessage + "Symbol: " + message.take[info].symbol + "\n";
+      oneLineMessage =
+        oneLineMessage + "URI: " + message.take[info].tokenURI + "\n";
+      oneLineMessage =
+        oneLineMessage + "Token id: " + message.take[info].tokenId + "\n";
+      oneLineMessage =
+        oneLineMessage +
+        "Image: " +
+        ipfsLink(message.take[info].metadata.image) +
+        "\n";
+    } else if (message.take[info].type === 2) {
+      oneLineMessage = oneLineMessage + "Type: ERC20 \n";
+      oneLineMessage =
+        oneLineMessage + "Address: " + message.take[info].tokenAddress + "\n";
+      oneLineMessage =
+        oneLineMessage + "Name: " + message.take[info].name + "\n";
+      oneLineMessage =
+        oneLineMessage + "Symbol: " + message.take[info].symbol + "\n";
+      oneLineMessage =
+        oneLineMessage + "Amounts : " + message.take[info].amounts + "\n";
+    } else if (message.take[info].type === 3) {
+      oneLineMessage = oneLineMessage + "Type: Native \n";
+      oneLineMessage =
+        oneLineMessage + "Name: " + message.take[info].name + "\n";
+      oneLineMessage =
+        oneLineMessage + "Symbol: " + message.take[info].symbol + "\n";
+      oneLineMessage =
+        oneLineMessage + "Amounts : " + message.take[info].amounts + "\n";
+    }
+  }
+  oneLineMessage = oneLineMessage + "\n";
+
+  for (info in message.give) {
+    oneLineMessage = oneLineMessage + "Give \n \n";
+    /*
+      type 0 = ERC1155
+      type 1 = ERC721
+      type 2 = ERC20
+      type 3 = Native Coin
+    */
+    if (message.give[info].type === 0) {
+      oneLineMessage = oneLineMessage + "Type: ERC1155 \n";
+      oneLineMessage =
+        oneLineMessage + "Address: " + message.give[info].tokenAddress + "\n";
+      oneLineMessage =
+        oneLineMessage + "URI: " + message.give[info].tokenURI + "\n";
+      oneLineMessage =
+        oneLineMessage + "Token id: " + message.give[info].tokenId + "\n";
+      oneLineMessage =
+        oneLineMessage + "Amounts : " + message.give[info].amounts + "\n";
+      oneLineMessage =
+        oneLineMessage + "Image: " + message.give[info].metadata.image + "\n";
+    } else if (message.give[info].type === 1) {
+      oneLineMessage = oneLineMessage + "Type: ERC721 \n";
+      oneLineMessage =
+        oneLineMessage + "Address: " + message.give[info].tokenAddress + "\n";
+      oneLineMessage =
+        oneLineMessage + "Name: " + message.give[info].name + "\n";
+      oneLineMessage =
+        oneLineMessage + "Symbol: " + message.give[info].symbol + "\n";
+      oneLineMessage =
+        oneLineMessage + "URI: " + message.give[info].tokenURI + "\n";
+      oneLineMessage =
+        oneLineMessage + "Token id: " + message.give[info].tokenId + "\n";
+      oneLineMessage =
+        oneLineMessage + "Image: " + message.give[info].metadata.image + "\n";
+    } else if (message.give[info].type === 2) {
+      oneLineMessage = oneLineMessage + "Type: ERC20 \n";
+      oneLineMessage =
+        oneLineMessage + "Address: " + message.give[info].tokenAddress + "\n";
+      oneLineMessage =
+        oneLineMessage + "Name: " + message.give[info].name + "\n";
+      oneLineMessage =
+        oneLineMessage + "Symbol: " + message.give[info].symbol + "\n";
+      oneLineMessage =
+        oneLineMessage + "Amounts : " + message.give[info].amounts + "\n";
+    } else if (message.give[info].type === 3) {
+      oneLineMessage = oneLineMessage + "Type: Native \n";
+      oneLineMessage =
+        oneLineMessage + "Name: " + message.give[info].name + "\n";
+      oneLineMessage =
+        oneLineMessage + "Symbol: " + message.give[info].symbol + "\n";
+      oneLineMessage =
+        oneLineMessage + "Amounts : " + message.give[info].amounts + "\n";
+    }
+  }
+
+  oneLineMessage = oneLineMessage + "\n";
+
+  await deployMessage(oneLineMessage);
+}
+
+async function newSwap(chainId, contract, swapId, blockNumber) {
+  if (!swaps[chainId][swapId.toString()]) {
+    let swap = await contract.swap(swapId.toString());
+    let take = await getSwap(chainId, swap, 0);
+    let give = await getSwap(chainId, swap, 1);
+
+    swaps[chainId][swapId.toString()] = {
+      id: swapId.toString(),
+      take: take,
+      give: give,
+    };
+
+    fs.writeFileSync("./backup/swaps.json", JSON.stringify(swaps, null, 2));
+
+    await send(swaps[chainId][swapId.toString()]);
+  } else {
+    console.log(
+      chainData[chainId].name + " / Swap id: " + "  has already been registered"
+    );
+  }
+}
+
+async function scan(provider, chainId, contract) {
+  //scan events in block rang
+  let lastScannedBlockNumber = swaps[chainId]["lastScan"].blockNumber;
+  let currentBlock = await provider.getBlockNumber();
+  let blockGap = currentBlock - lastScannedBlockNumber;
+
+  console.log(
+    chainData[chainId].name +
+      " / Scanning events from blocks " +
+      lastScannedBlockNumber +
+      " - " +
+      currentBlock
+  );
+
+  if (blockGap > chainData[chainId].minBlockRang) {
+    // SwapMade contract.filters.SwapMade() or SwapTaken contract.filters.SwapTaken()
+    let events = await contract.queryFilter(
+      contract.filters.SwapMade(),
+      -blockGap
+    );
+
+    for (let event in events) {
+      blockNumber = events[event].blockNumber;
+      // SwapMade args = 4 or SwapTaken args = 0
+      swapId = events[event].args[4].toString();
+      console.log(chainData[chainId].name + " / New swap id:" + swapId);
+      newSwap(chainId, contract, swapId, blockNumber);
+    }
+
+    console.log(
+      chainData[chainId].name +
+        " / Scanned total " +
+        events.length +
+        " events for " +
+        blockGap +
+        " blocks"
+    );
+  }
+  swaps[chainId]["lastScan"] = {
+    blockNumber: currentBlock,
   };
 
   fs.writeFileSync("./backup/swaps.json", JSON.stringify(swaps, null, 2));
-
-  await send(swaps[chainId][swapId.toString()]);
 }
 
-async function listner(chainId, contract) {
-  //listen to the events
-  contract.on("SwapTaken", function swap(swapId) {
-    newSwap(chainId, contract, swapId);
-  });
+async function listner(provider, chainId, contract) {
+  setInterval(function () {
+    scan(provider, chainId, contract);
+  }, chainData[chainId].pollingInterval);
 }
 
 async function main() {
@@ -270,70 +447,8 @@ async function main() {
       providers[chain]
     );
 
-    listner(chain, contract[chain]);
+    listner(providers[chain], chain, contract[chain]);
   }
-
-  /*
-    if (metadata.image.substring(0, 4) == "ipfs") {
-      image = "https://ipfs.io/ipfs/" + metadata.image.substring(7);
-    } else if (metadata.image.substring(0, 4) == "http") {
-      image = metadata.image;
-    }
-
-    if (chain == 3) {
-      let swapId = 15;
-
-    let swap = await contract[chain].swap(swapId);
-
-    let take = await getSwap(swap, 0);
-
-    let give = await getSwap(swap, 1);
-
-    swaps[chain][swapId] = {
-      id: swapId,
-    take: take,
-    give: give,
-      };
-
-    swaps[chain]["lastSwapId"] = swapId;
-
-    fs.writeFileSync("./backup/swaps.json", JSON.stringify(swaps, null, 2));
-
-    }
-
-    console.log(
-    contract
-    .queryFilter("SwapTaken", {fromBlock: 0, toBlock: "latest" })
-        .then((events) => console.log(events))
-    );
-
-    let eventFilter = contract[chain].filters.SwapTaken();
-    let events = await contract[chain].queryFilter(eventFilter, -1000);
-
-    for (let lock in events) {
-      console.log(events[lock]);
-    }
-
-
-    //listen to the events
-    contract[chain].on("SwapTaken", (swapId) => {
-      //newSwap(swapId);
-    });
-
-
-    // poll "Sync" events for reference
-    provider.on("block", blockNumber => {
-      setImmediate(async () => {
-        const filter = contract.filters["Sync"]();
-        const events = await contract.queryFilter(filter, blockNumber);
-        const data = events.map(e => [
-          e.args?.reserve0.toString(),
-          e.args?.reserve1.toString()
-        ]);
-        console.log(">>> poll", blockNumber, data);
-      })
-    })
-    */
 }
 
 main();
